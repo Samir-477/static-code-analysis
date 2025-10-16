@@ -1,10 +1,11 @@
 import json
-import logging
 from datetime import datetime
 
 stock_data = {}
 
-def addItem(item="default", qty=0, logs=[]):
+def addItem(item="default", qty=0, logs=None):
+    if logs is None:
+        logs = []
     if not item:
         return
     stock_data[item] = stock_data.get(item, 0) + qty
@@ -15,22 +16,20 @@ def removeItem(item, qty):
         stock_data[item] -= qty
         if stock_data[item] <= 0:
             del stock_data[item]
-    except:
-        pass
+    except KeyError:
+        print(f"Item '{item}' not found in inventory")
 
 def getQty(item):
     return stock_data[item]
 
 def loadData(file="inventory.json"):
-    f = open(file, "r")
-    global stock_data
-    stock_data = json.loads(f.read())
-    f.close()
+    with open(file, "r", encoding='utf-8') as f:
+        global stock_data
+        stock_data = json.loads(f.read())
 
 def saveData(file="inventory.json"):
-    f = open(file, "w")
-    f.write(json.dumps(stock_data))
-    f.close()
+    with open(file, "w", encoding='utf-8') as f:
+        f.write(json.dumps(stock_data))
 
 def printData():
     print("Items Report")
@@ -55,6 +54,6 @@ def main():
     saveData()
     loadData()
     printData()
-    eval("print('eval used')")
+    print('eval used')
 
 main()
