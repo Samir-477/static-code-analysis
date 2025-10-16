@@ -97,7 +97,7 @@ main()
 # FIX 3: Replaced bare except clause - provides specific error handling
 # FIX 4: Implemented safe file operations - ensures proper resource cleanup
 # FIX 5: Removed eval() usage - eliminates security vulnerability
-# 
+#
 # RESULT: Pylint score improved from 4.80/10 to 6.33/10 (+1.53 points)
 #         All security issues resolved (Bandit: 2 → 0 issues)
 #         Code is now more secure, reliable, and maintainable

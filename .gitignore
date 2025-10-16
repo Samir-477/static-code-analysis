@@ -40,10 +40,15 @@ Thumbs.db
 # Project specific
 *.json
 inventory.json
+# Allow specific analysis reports for documentation
+!pylint_report_latest.txt
+!bandit_report_latest.txt
+!flake8_report_latest.txt
+# Ignore other txt files
 *.txt
-pylint_report*.txt
-bandit_report*.txt
-flake8_report*.txt
+pylint_report.txt
+bandit_report.txt
+flake8_report.txt
 
 # Logs
 *.log
