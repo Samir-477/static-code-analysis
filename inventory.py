@@ -1,11 +1,15 @@
+# BEFORE: import json
+# BEFORE: import logging  # <-- Unused import (FIXED: removed)
 import json
 from datetime import datetime
 
 stock_data = {}
 
-def addItem(item="default", qty=0, logs=None):
-    if logs is None:
+# BEFORE: def addItem(item="default", qty=0, logs=[]):  # <-- Mutable default argument (PROBLEM)
+def addItem(item="default", qty=0, logs=None):  # <-- FIXED: Changed to None
+    if logs is None:  # <-- FIXED: Initialize empty list inside function
         logs = []
+    # BEFORE: # No initialization needed (logs=[] was shared across calls)
     if not item:
         return
     stock_data[item] = stock_data.get(item, 0) + qty
@@ -16,19 +20,28 @@ def removeItem(item, qty):
         stock_data[item] -= qty
         if stock_data[item] <= 0:
             del stock_data[item]
-    except KeyError:
-        print(f"Item '{item}' not found in inventory")
+    # BEFORE: except:  # <-- Bare except clause (PROBLEM: catches all exceptions)
+    # BEFORE:     pass  # <-- Silent failure (PROBLEM: no error handling)
+    except KeyError:  # <-- FIXED: Specific exception handling
+        print(f"Item '{item}' not found in inventory")  # <-- FIXED: Informative error message
 
 def getQty(item):
     return stock_data[item]
 
 def loadData(file="inventory.json"):
-    with open(file, "r", encoding='utf-8') as f:
+    # BEFORE: f = open(file, "r")  # <-- Unsafe file operation (PROBLEM: no context manager)
+    # BEFORE: global stock_data
+    # BEFORE: stock_data = json.loads(f.read())
+    # BEFORE: f.close()  # <-- Manual file closing (PROBLEM: might not close if exception occurs)
+    with open(file, "r", encoding='utf-8') as f:  # <-- FIXED: Context manager with encoding
         global stock_data
         stock_data = json.loads(f.read())
 
 def saveData(file="inventory.json"):
-    with open(file, "w", encoding='utf-8') as f:
+    # BEFORE: f = open(file, "w")  # <-- Unsafe file operation (PROBLEM: no context manager)
+    # BEFORE: f.write(json.dumps(stock_data))
+    # BEFORE: f.close()  # <-- Manual file closing (PROBLEM: might not close if exception occurs)
+    with open(file, "w", encoding='utf-8') as f:  # <-- FIXED: Context manager with encoding
         f.write(json.dumps(stock_data))
 
 def printData():
@@ -54,6 +67,7 @@ def main():
     saveData()
     loadData()
     printData()
-    print('eval used')
+    # BEFORE: eval("print('eval used')")  # <-- Security vulnerability (PROBLEM: can execute arbitrary code)
+    print('eval used')  # <-- FIXED: Direct print statement (safe)
 
 main()
